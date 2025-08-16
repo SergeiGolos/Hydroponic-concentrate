@@ -21,6 +21,7 @@ errorOnDuplicatesPkgDeps(devDependencies, dependencies);
 
 export default defineConfig(({ command, mode }): UserConfig => {
   return {
+    base: process.env.GITHUB_ACTIONS ? '/Hydroponic-concentrate/' : '/',
     plugins: [
       qwikCity(),
       qwikVite(),
