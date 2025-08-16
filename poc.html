@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concentrated Mixture Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for better aesthetics */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for rounded corners and shadows */
+        .card {
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-4">
+    <div class="card bg-white p-8 md:p-10 lg:p-12 w-full max-w-md mx-auto text-center">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-6">Mixture Calculator</h1>
+
+        <p class="text-gray-600 mb-8 text-sm md:text-base">
+            Enter your desired container size to calculate the required grams for each concentrate.
+            The original formula is based on 120g Master Blend, 60g Epsom Salt, and 120g Calcium Nitrate per 500ml of water.
+        </p>
+
+        <div class="mb-6">
+            <label for="containerSize" class="block text-gray-700 text-lg font-semibold mb-2 text-left">Container Size:</label>
+            <div class="flex items-center space-x-3">
+                <input
+                    type="number"
+                    id="containerSize"
+                    min="0.1"
+                    step="0.1"
+                    value="500"
+                    class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 text-lg"
+                    placeholder="e.g., 500"
+                >
+                <select
+                    id="unit"
+                    class="p-3 border border-gray-300 rounded-md bg-white text-gray-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                    <option value="ml">ml</option>
+                    <option value="gallon">Gallon</option>
+                    <option value="5gallon">5 Gallons</option>
+                </select>
+            </div>
+        </div>
+
+        <button
+            onclick="calculateMixture()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 shadow-lg"
+        >
+            Calculate
+        </button>
+
+        <div id="results" class="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-xl text-left hidden">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">Required Amounts:</h2>
+            <p class="text-gray-700 text-lg mb-2">
+                <span class="font-semibold">Master Blend:</span> <span id="masterBlendResult" class="font-bold text-blue-900"></span> grams
+            </p>
+            <p class="text-gray-700 text-lg mb-2">
+                <span class="font-semibold">Epsom Salt:</span> <span id="epsomSaltResult" class="font-bold text-blue-900"></span> grams
+            </p>
+            <p class="text-gray-700 text-lg">
+                <span class="font-semibold">Calcium Nitrate:</span> <span id="calciumNitrateResult" class="font-bold text-blue-900"></span> grams
+            </p>
+        </div>
+
+        <div id="errorMessage" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md hidden">
+            Please enter a valid container size (a positive number).
+        </div>
+    </div>
+
+    <script>
+        // Constants based on the original video's 500ml formula
+        const ORIGINAL_VOLUME_ML = 500;
+        const MASTER_BLEND_PER_500ML = 120; // grams
+        const EPSOM_SALT_PER_500ML = 60;    // grams
+        const CALCIUM_NITRATE_PER_500ML = 120; // grams
+
+        // Conversion factors to milliliters
+        const GALLON_TO_ML = 3785.41; // 1 US liquid gallon = 3785.41 ml
+
+        /**
+         * Calculates the required grams of each component based on the user-entered container size and unit.
+         */
+        function calculateMixture() {
+            const containerSizeInput = document.getElementById('containerSize');
+            const unitSelect = document.getElementById('unit');
+            const resultsDiv = document.getElementById('results');
+            const errorMessageDiv = document.getElementById('errorMessage');
+
+            const containerSize = parseFloat(containerSizeInput.value);
+            const unit = unitSelect.value;
+
+            // Input validation
+            if (isNaN(containerSize) || containerSize <= 0) {
+                errorMessageDiv.classList.remove('hidden');
+                resultsDiv.classList.add('hidden'); // Hide results if there's an error
+                return;
+            } else {
+                errorMessageDiv.classList.add('hidden'); // Hide error message if input is valid
+            }
+
+            let newVolumeML;
+
+            // Convert the input container size to milliliters
+            switch (unit) {
+                case 'ml':
+                    newVolumeML = containerSize;
+                    break;
+                case 'gallon':
+                    newVolumeML = containerSize * GALLON_TO_ML;
+                    break;
+                case '5gallon':
+                    newVolumeML = containerSize * (5 * GALLON_TO_ML);
+                    break;
+                default:
+                    // Should not happen with the given options, but good for robustness
+                    console.error("Unknown unit selected:", unit);
+                    newVolumeML = containerSize; // Default to ml if unit is unknown
+            }
+
+            // Calculate the scaling factor relative to the original 500ml formula
+            const scalingFactor = newVolumeML / ORIGINAL_VOLUME_ML;
+
+            // Calculate the new amounts for each component
+            const newMasterBlend = (MASTER_BLEND_PER_500ML * scalingFactor).toFixed(2);
+            const newEpsomSalt = (EPSOM_SALT_PER_500ML * scalingFactor).toFixed(2);
+            const newCalciumNitrate = (CALCIUM_NITRATE_PER_500ML * scalingFactor).toFixed(2);
+
+            // Display the results
+            document.getElementById('masterBlendResult').textContent = newMasterBlend;
+            document.getElementById('epsomSaltResult').textContent = newEpsomSalt;
+            document.getElementById('calciumNitrateResult').textContent = newCalciumNitrate;
+
+            // Show the results section
+            resultsDiv.classList.remove('hidden');
+        }
+
+        // Optional: Trigger calculation on Enter key press in the input field
+        document.getElementById('containerSize').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateMixture();
+            }
+        });
+
+        // Optional: Trigger calculation on unit change
+        document.getElementById('unit').addEventListener('change', calculateMixture);
+
+        // Initial calculation on page load with default values
+        document.addEventListener('DOMContentLoaded', calculateMixture);
+
+    </script>
+</body>
+</html>
