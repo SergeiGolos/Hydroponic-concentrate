@@ -1,12 +1,16 @@
-import { component$, useSignal, $ } from '@builder.io/qwik';
-import type { VolumeUnit, CalculationResult } from '../../types/calculator';
-import { calculateMixture, validateInput, formatWeight } from '../../utils/calculator';
+import { component$, useSignal, $ } from "@builder.io/qwik";
+import type { VolumeUnit, CalculationResult } from "../../types/calculator";
+import {
+  calculateMixture,
+  validateInput,
+  formatWeight,
+} from "../../utils/calculator";
 
 export const ConcentrateCalculator = component$(() => {
   const containerSize = useSignal(500);
-  const unit = useSignal<VolumeUnit>('ml');
+  const unit = useSignal<VolumeUnit>("ml");
   const results = useSignal<CalculationResult | null>(null);
-  const error = useSignal('');
+  const error = useSignal("");
   const showResults = useSignal(false);
 
   const performCalculation = $(() => {
@@ -25,10 +29,10 @@ export const ConcentrateCalculator = component$(() => {
 
       const calculationResult = calculateMixture(input);
       results.value = calculationResult;
-      error.value = '';
+      error.value = "";
       showResults.value = true;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Calculation failed';
+      error.value = err instanceof Error ? err.message : "Calculation failed";
       showResults.value = false;
     }
   });
@@ -37,19 +41,23 @@ export const ConcentrateCalculator = component$(() => {
   performCalculation();
 
   return (
-    <div class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-4">
-      <div class="bg-white p-8 md:p-10 lg:p-12 w-full max-w-md mx-auto text-center rounded-xl shadow-xl">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-6">
+    <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+      <div class="mx-auto w-full max-w-md rounded-xl bg-white p-8 text-center shadow-xl md:p-10 lg:p-12">
+        <h1 class="mb-6 text-3xl font-extrabold text-gray-800 md:text-4xl">
           Mixture Calculator
         </h1>
 
-        <p class="text-gray-600 mb-8 text-sm md:text-base">
-          Enter your desired container size to calculate the required grams for each concentrate.
-          The original formula is based on 120g Master Blend, 60g Epsom Salt, and 120g Calcium Nitrate per 500ml of water.
+        <p class="mb-8 text-sm text-gray-600 md:text-base">
+          Enter your desired container size to calculate the required grams for
+          each concentrate. The original formula is based on 120g Master Blend,
+          60g Epsom Salt, and 120g Calcium Nitrate per 500ml of water.
         </p>
 
         <div class="mb-6">
-          <label for="containerSize" class="block text-gray-700 text-lg font-semibold mb-2 text-left">
+          <label
+            for="containerSize"
+            class="mb-2 block text-left text-lg font-semibold text-gray-700"
+          >
             Container Size:
           </label>
           <div class="flex items-center space-x-3">
@@ -60,14 +68,14 @@ export const ConcentrateCalculator = component$(() => {
               step="0.1"
               bind:value={containerSize}
               onInput$={performCalculation}
-              class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-800 text-lg"
+              class="flex-grow rounded-md border border-gray-300 p-3 text-lg text-gray-800 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               placeholder="e.g., 500"
             />
             <select
               id="unit"
               bind:value={unit}
               onChange$={performCalculation}
-              class="p-3 border border-gray-300 rounded-md bg-white text-gray-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              class="rounded-md border border-gray-300 bg-white p-3 text-lg text-gray-800 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             >
               <option value="ml">ml</option>
               <option value="gallon">Gallon</option>
@@ -78,31 +86,42 @@ export const ConcentrateCalculator = component$(() => {
 
         <button
           onClick$={performCalculation}
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 shadow-lg"
+          class="focus:ring-opacity-75 w-full transform rounded-md bg-blue-600 px-6 py-3 font-bold text-white shadow-lg transition duration-300 ease-in-out hover:scale-105 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none"
         >
           Calculate
         </button>
 
         {showResults.value && results.value && (
-          <div class="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-xl text-left">
-            <h2 class="text-2xl font-bold text-blue-800 mb-4">Required Amounts:</h2>
-            <p class="text-gray-700 text-lg mb-2">
-              <span class="font-semibold">Master Blend:</span>{' '}
-              <span class="font-bold text-blue-900">{formatWeight(results.value.masterBlend)}</span> grams
+          <div class="mt-8 rounded-xl border border-blue-200 bg-blue-50 p-6 text-left">
+            <h2 class="mb-4 text-2xl font-bold text-blue-800">
+              Required Amounts:
+            </h2>
+            <p class="mb-2 text-lg text-gray-700">
+              <span class="font-semibold">Master Blend:</span>{" "}
+              <span class="font-bold text-blue-900">
+                {formatWeight(results.value.masterBlend)}
+              </span>{" "}
+              grams
             </p>
-            <p class="text-gray-700 text-lg mb-2">
-              <span class="font-semibold">Epsom Salt:</span>{' '}
-              <span class="font-bold text-blue-900">{formatWeight(results.value.epsomSalt)}</span> grams
+            <p class="mb-2 text-lg text-gray-700">
+              <span class="font-semibold">Epsom Salt:</span>{" "}
+              <span class="font-bold text-blue-900">
+                {formatWeight(results.value.epsomSalt)}
+              </span>{" "}
+              grams
             </p>
-            <p class="text-gray-700 text-lg">
-              <span class="font-semibold">Calcium Nitrate:</span>{' '}
-              <span class="font-bold text-blue-900">{formatWeight(results.value.calciumNitrate)}</span> grams
+            <p class="text-lg text-gray-700">
+              <span class="font-semibold">Calcium Nitrate:</span>{" "}
+              <span class="font-bold text-blue-900">
+                {formatWeight(results.value.calciumNitrate)}
+              </span>{" "}
+              grams
             </p>
           </div>
         )}
 
         {error.value && (
-          <div class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+          <div class="mt-4 rounded-md border border-red-400 bg-red-100 p-3 text-red-700">
             {error.value}
           </div>
         )}

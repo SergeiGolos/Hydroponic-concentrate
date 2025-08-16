@@ -1,6 +1,6 @@
-export type VolumeUnit = 'ml' | 'gallon' | '5gallon';
+export type VolumeUnit = "ml" | "gallon" | "5gallon";
 
-export type CalculationMode = 'by-container' | 'by-ingredient';
+export type CalculationMode = "by-container" | "by-ingredient";
 
 export interface ConcentrateFormula {
   readonly originalVolumeML: number;

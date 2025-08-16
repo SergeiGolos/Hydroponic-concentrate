@@ -4,13 +4,13 @@ import type {
   CalculationInput,
   CalculationResult,
   ValidationResult,
-} from '../types/calculator';
+} from "../types/calculator";
 
 // Constants based on the original video's 500ml formula
 export const DEFAULT_FORMULA: ConcentrateFormula = {
   originalVolumeML: 500,
   masterBlendPerOriginal: 120, // grams
-  epsomSaltPerOriginal: 60,    // grams
+  epsomSaltPerOriginal: 60, // grams
   calciumNitratePerOriginal: 120, // grams
 } as const;
 
@@ -20,16 +20,19 @@ const GALLON_TO_ML = 3785.41; // 1 US liquid gallon = 3785.41 ml
 /**
  * Convert input volume to milliliters based on the selected unit
  */
-export function convertToMilliliters(containerSize: number, unit: VolumeUnit): number {
+export function convertToMilliliters(
+  containerSize: number,
+  unit: VolumeUnit,
+): number {
   switch (unit) {
-    case 'ml':
+    case "ml":
       return containerSize;
-    case 'gallon':
+    case "gallon":
       return containerSize * GALLON_TO_ML;
-    case '5gallon':
+    case "5gallon":
       return containerSize * (5 * GALLON_TO_ML);
     default:
-      console.error('Unknown unit selected:', unit);
+      console.error("Unknown unit selected:", unit);
       return containerSize; // Default to ml if unit is unknown
   }
 }
@@ -41,11 +44,11 @@ export function validateInput(input: CalculationInput): ValidationResult {
   const errors: string[] = [];
 
   if (isNaN(input.containerSize) || input.containerSize <= 0) {
-    errors.push('Container size must be a positive number');
+    errors.push("Container size must be a positive number");
   }
 
-  if (!['ml', 'gallon', '5gallon'].includes(input.unit)) {
-    errors.push('Invalid unit selected');
+  if (!["ml", "gallon", "5gallon"].includes(input.unit)) {
+    errors.push("Invalid unit selected");
   }
 
   return {
@@ -59,11 +62,11 @@ export function validateInput(input: CalculationInput): ValidationResult {
  */
 export function calculateMixture(
   input: CalculationInput,
-  formula: ConcentrateFormula = DEFAULT_FORMULA
+  formula: ConcentrateFormula = DEFAULT_FORMULA,
 ): CalculationResult {
   const validation = validateInput(input);
   if (!validation.isValid) {
-    throw new Error(`Invalid input: ${validation.errors.join(', ')}`);
+    throw new Error(`Invalid input: ${validation.errors.join(", ")}`);
   }
 
   // Convert the input container size to milliliters
@@ -73,9 +76,15 @@ export function calculateMixture(
   const scalingFactor = newVolumeML / formula.originalVolumeML;
 
   // Calculate the new amounts for each component
-  const masterBlend = parseFloat((formula.masterBlendPerOriginal * scalingFactor).toFixed(2));
-  const epsomSalt = parseFloat((formula.epsomSaltPerOriginal * scalingFactor).toFixed(2));
-  const calciumNitrate = parseFloat((formula.calciumNitratePerOriginal * scalingFactor).toFixed(2));
+  const masterBlend = parseFloat(
+    (formula.masterBlendPerOriginal * scalingFactor).toFixed(2),
+  );
+  const epsomSalt = parseFloat(
+    (formula.epsomSaltPerOriginal * scalingFactor).toFixed(2),
+  );
+  const calciumNitrate = parseFloat(
+    (formula.calciumNitratePerOriginal * scalingFactor).toFixed(2),
+  );
 
   return {
     masterBlend,
