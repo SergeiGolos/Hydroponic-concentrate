@@ -11,11 +11,13 @@ export const head: DocumentHead = {
   meta: [
     {
       name: "description",
-      content: "Calculate precise hydroponic concentrate ratios based on Master Blend formula. Enter your container size to get exact measurements for Master Blend, Epsom Salt, and Calcium Nitrate.",
+      content:
+        "Calculate precise hydroponic concentrate ratios based on Master Blend formula. Enter your container size to get exact measurements for Master Blend, Epsom Salt, and Calcium Nitrate.",
     },
     {
       name: "keywords",
-      content: "hydroponic, concentrate, calculator, Master Blend, Epsom Salt, Calcium Nitrate, hydroponics, nutrition",
+      content:
+        "hydroponic, concentrate, calculator, Master Blend, Epsom Salt, Calcium Nitrate, hydroponics, nutrition",
     },
     {
       name: "viewport",
