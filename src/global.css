@@ -3,6 +3,8 @@
 /* Custom font for better aesthetics */
 body {
   font-family: "Inter", sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-variant-numeric: oldstyle-nums;
 }
 
 /* Hide number input spin buttons */
@@ -14,4 +16,90 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #10b981 0%, #10b981 var(--range-progress, 0%), #e5e7eb var(--range-progress, 0%), #e5e7eb 100%);
+}
+
+input[type="range"]::-webkit-slider-track {
+  background: transparent;
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ffffff;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 3px solid #10b981;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+input[type="range"]::-moz-range-track {
+  background: transparent;
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: #ffffff;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 3px solid #10b981;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Container animation keyframes */
+@keyframes scaleContainer {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.container-animation {
+  animation: scaleContainer 0.3s ease-out;
+}
+
+/* Results fade-in animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
