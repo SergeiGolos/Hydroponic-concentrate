@@ -187,3 +187,100 @@ export function getSystemUnits(system: "metric" | "imperial"): VolumeUnit[] {
     return ["floz", "gallon"];
   }
 }
+
+/**
+ * Get the appropriate unit and display value based on the raw value and measurement system
+ * For sliding scale behavior: ml->L at 1000ml, fl oz->gal at 128 fl oz
+ */
+export function getDynamicUnitAndValue(
+  rawValue: number,
+  system: "metric" | "imperial",
+): { unit: VolumeUnit; displayValue: number; displayText: string } {
+  if (system === "metric") {
+    if (rawValue >= 1000) {
+      // Switch to liters after 1000ml
+      const displayValue = rawValue / 1000;
+      return {
+        unit: "liter",
+        displayValue,
+        displayText: `${displayValue.toFixed(1)} L`,
+      };
+    } else {
+      // Stay in milliliters
+      return {
+        unit: "ml",
+        displayValue: rawValue,
+        displayText: `${Math.round(rawValue)} ml`,
+      };
+    }
+  } else {
+    // Imperial system
+    if (rawValue >= 128) {
+      // Switch to gallons after 128 fl oz (1 gallon)
+      const displayValue = rawValue / 128;
+      return {
+        unit: "gallon",
+        displayValue,
+        displayText: `${displayValue.toFixed(1)} gal`,
+      };
+    } else {
+      // Stay in fluid ounces
+      return {
+        unit: "floz",
+        displayValue: rawValue,
+        displayText: `${Math.round(rawValue)} fl oz`,
+      };
+    }
+  }
+}
+
+/**
+ * Get unified slider range for a measurement system that spans both units
+ * Metric: 50ml to 20000ml (20L)
+ * Imperial: 1 fl oz to 1280 fl oz (10 gallons)
+ */
+export function getDynamicRange(system: "metric" | "imperial"): {
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+} {
+  if (system === "metric") {
+    // Range from 50ml to 20,000ml (20L)
+    // Step of 25ml when < 1000ml, then equivalent to 0.025L steps
+    return { min: 50, max: 20000, step: 25, defaultValue: 500 };
+  } else {
+    // Range from 1 fl oz to 1280 fl oz (10 gallons)  
+    // Step of 1 fl oz when < 128 fl oz, then equivalent to ~0.008 gallon steps
+    return { min: 1, max: 1280, step: 1, defaultValue: 17 }; // ~500ml equivalent
+  }
+}
+
+/**
+ * Convert the raw slider value to the appropriate internal unit for calculations
+ * This ensures calculations always work with the expected base units
+ */
+export function convertDynamicValueToUnit(
+  rawValue: number,
+  system: "metric" | "imperial",
+): { value: number; unit: VolumeUnit } {
+  const unitInfo = getDynamicUnitAndValue(rawValue, system);
+  
+  if (system === "metric") {
+    if (rawValue >= 1000) {
+      // Value is in liters for calculation
+      return { value: unitInfo.displayValue, unit: "liter" };
+    } else {
+      // Value is in ml for calculation
+      return { value: rawValue, unit: "ml" };
+    }
+  } else {
+    if (rawValue >= 128) {
+      // Value is in gallons for calculation  
+      return { value: unitInfo.displayValue, unit: "gallon" };
+    } else {
+      // Value is in fl oz for calculation
+      return { value: rawValue, unit: "floz" };
+    }
+  }
+}

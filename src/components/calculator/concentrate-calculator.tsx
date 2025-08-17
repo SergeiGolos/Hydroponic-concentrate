@@ -1,6 +1,5 @@
 import { component$, useSignal, $, useTask$ } from "@builder.io/qwik";
 import type {
-  VolumeUnit,
   CalculationResult,
   MeasurementSystem,
 } from "../../types/calculator";
@@ -9,14 +8,13 @@ import {
   validateInput,
   formatWeight,
   formatVolume,
-  getUnitRange,
-  getUnitDisplayName,
-  getSystemUnits,
+  getDynamicUnitAndValue,
+  getDynamicRange,
+  convertDynamicValueToUnit,
 } from "../../utils/calculator";
 
 export const ConcentrateCalculator = component$(() => {
-  const containerSize = useSignal(500);
-  const unit = useSignal<VolumeUnit>("ml");
+  const containerSize = useSignal(500); // This is now the raw slider value
   const measurementSystem = useSignal<MeasurementSystem>("metric");
   const results = useSignal<CalculationResult | null>(null);
   const error = useSignal("");
@@ -25,9 +23,15 @@ export const ConcentrateCalculator = component$(() => {
 
   const performCalculation = $(() => {
     try {
+      // Convert the raw slider value to the appropriate unit for calculation
+      const { value, unit } = convertDynamicValueToUnit(
+        containerSize.value,
+        measurementSystem.value,
+      );
+
       const input = {
-        containerSize: containerSize.value,
-        unit: unit.value,
+        containerSize: value,
+        unit: unit,
         measurementSystem: measurementSystem.value,
       };
 
@@ -51,7 +55,7 @@ export const ConcentrateCalculator = component$(() => {
   // Update slider progress indicator
   const updateSliderProgress = $(() => {
     if (sliderRef.value) {
-      const range = getUnitRange(unit.value);
+      const range = getDynamicRange(measurementSystem.value);
       const progress =
         ((containerSize.value - range.min) / (range.max - range.min)) * 100;
       sliderRef.value.style.setProperty("--range-progress", `${progress}%`);
@@ -60,26 +64,15 @@ export const ConcentrateCalculator = component$(() => {
 
   // Update container size and maintain within bounds
   const updateContainerSize = $((newSize: number) => {
-    const range = getUnitRange(unit.value);
+    const range = getDynamicRange(measurementSystem.value);
     containerSize.value = Math.max(range.min, Math.min(range.max, newSize));
-    updateSliderProgress();
-    performCalculation();
-  });
-
-  const handleUnitChange = $((newUnit: VolumeUnit) => {
-    unit.value = newUnit;
-    const range = getUnitRange(newUnit);
-    containerSize.value = range.defaultValue;
     updateSliderProgress();
     performCalculation();
   });
 
   const handleSystemChange = $((newSystem: MeasurementSystem) => {
     measurementSystem.value = newSystem;
-    const availableUnits = getSystemUnits(newSystem);
-    const newUnit = availableUnits[0]; // Default to first unit in the system
-    unit.value = newUnit;
-    const range = getUnitRange(newUnit);
+    const range = getDynamicRange(newSystem);
     containerSize.value = range.defaultValue;
     updateSliderProgress();
     performCalculation();
@@ -93,8 +86,14 @@ export const ConcentrateCalculator = component$(() => {
     return "🛢️";
   };
 
-  // Get current range for the selected unit
-  const range = getUnitRange(unit.value);
+  // Get current range for the selected measurement system
+  const range = getDynamicRange(measurementSystem.value);
+
+  // Get dynamic unit display info
+  const dynamicUnit = getDynamicUnitAndValue(
+    containerSize.value,
+    measurementSystem.value,
+  );
 
   // Initial calculation using useTask$
   useTask$(() => {
@@ -144,7 +143,7 @@ export const ConcentrateCalculator = component$(() => {
                         results.value.totalVolumeML,
                         measurementSystem.value,
                       )
-                    : `${containerSize.value} ${getUnitDisplayName(unit.value)}`}
+                    : dynamicUnit.displayText}
                 </span>
               </div>
             </div>
@@ -178,32 +177,6 @@ export const ConcentrateCalculator = component$(() => {
               </div>
             </div>
 
-            {/* Unit Selection */}
-            <div class="mb-4">
-              <label class="mb-3 block text-sm font-medium text-slate-700">
-                Unit
-              </label>
-              <div
-                class={`grid grid-cols-${getSystemUnits(measurementSystem.value).length} rounded-xl border border-slate-200 bg-slate-50 p-1`}
-              >
-                {getSystemUnits(measurementSystem.value).map(
-                  (availableUnit) => (
-                    <button
-                      key={availableUnit}
-                      class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
-                        unit.value === availableUnit
-                          ? "bg-white text-emerald-600 shadow-sm"
-                          : "text-slate-600 hover:text-slate-800"
-                      }`}
-                      onClick$={() => handleUnitChange(availableUnit)}
-                    >
-                      {getUnitDisplayName(availableUnit)}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
-
             {/* Slider Control */}
             <div class="space-y-4">
               <div class="relative">
@@ -222,10 +195,12 @@ export const ConcentrateCalculator = component$(() => {
                 />
                 <div class="mt-2 flex justify-between text-xs text-slate-500">
                   <span>
-                    {range.min} {getUnitDisplayName(unit.value)}
+                    {getDynamicUnitAndValue(range.min, measurementSystem.value)
+                      .displayText}
                   </span>
                   <span>
-                    {range.max} {getUnitDisplayName(unit.value)}
+                    {getDynamicUnitAndValue(range.max, measurementSystem.value)
+                      .displayText}
                   </span>
                 </div>
               </div>
@@ -248,7 +223,9 @@ export const ConcentrateCalculator = component$(() => {
                   }}
                 />
                 <span class="text-sm text-slate-600">
-                  {getUnitDisplayName(unit.value)}
+                  {dynamicUnit.unit === 'ml' ? 'ml' : 
+                   dynamicUnit.unit === 'liter' ? 'L' :
+                   dynamicUnit.unit === 'floz' ? 'fl oz' : 'gal'}
                 </span>
               </div>
             </div>
