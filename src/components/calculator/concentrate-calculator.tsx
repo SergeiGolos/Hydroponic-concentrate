@@ -164,7 +164,7 @@ export const ConcentrateCalculator = component$(() => {
 
             {/* Precise Input Checkbox */}
             <div class="mb-4">
-              <label class="flex items-center space-x-3 cursor-pointer">
+              <label class="flex cursor-pointer items-center space-x-3">
                 <input
                   type="checkbox"
                   checked={showPreciseInput.value}
@@ -172,7 +172,7 @@ export const ConcentrateCalculator = component$(() => {
                     const target = e.target as HTMLInputElement;
                     showPreciseInput.value = target.checked;
                   }}
-                  class="w-4 h-4 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2"
+                  class="h-4 w-4 rounded border-slate-300 bg-white text-emerald-600 focus:ring-2 focus:ring-emerald-500"
                 />
                 <span class="text-sm font-medium text-slate-700 lg:text-base xl:text-lg">
                   Use precise value input
