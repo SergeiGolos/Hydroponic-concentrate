@@ -12,6 +12,7 @@ import {
   getDynamicUnitAndValue,
   getDynamicRange,
   getUnitDisplayName,
+  convertToMilliliters,
 } from "../../utils/calculator";
 
 export const ConcentrateCalculator = component$(() => {
@@ -77,6 +78,33 @@ export const ConcentrateCalculator = component$(() => {
       measurementSystem.value = "imperial";
     }
     performCalculation();
+  });
+
+  const handleMeasurementSystemChange = $((newSystem: MeasurementSystem) => {
+    const oldSystem = measurementSystem.value;
+    measurementSystem.value = newSystem;
+
+    // Convert the current container size to maintain approximately the same volume
+    if (oldSystem !== newSystem) {
+      const currentVolumeML = convertToMilliliters(
+        containerSize.value,
+        selectedUnit.value,
+      );
+
+      // Set the appropriate default unit for the new system
+      if (newSystem === "metric") {
+        selectedUnit.value = "ml";
+        containerSize.value = Math.round(currentVolumeML);
+      } else {
+        selectedUnit.value = "floz";
+        // Convert ML to fl oz and round to nearest integer
+        containerSize.value = Math.round(currentVolumeML / 29.5735);
+      }
+
+      // Update slider range for the new system and recalculate
+      updateSliderProgress();
+      performCalculation();
+    }
   });
 
   // Get container icon based on volume
@@ -159,6 +187,32 @@ export const ConcentrateCalculator = component$(() => {
                       )
                     : getDisplayValue()}
                 </span>
+              </div>
+            </div>
+
+            {/* Measurement System Toggle */}
+            <div class="flex items-center justify-center">
+              <div class="inline-flex rounded-lg border border-slate-300 bg-white p-1">
+                <button
+                  onClick$={() => handleMeasurementSystemChange("metric")}
+                  class={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                    measurementSystem.value === "metric"
+                      ? "bg-emerald-500 text-white shadow-sm"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+                  }`}
+                >
+                  Metric
+                </button>
+                <button
+                  onClick$={() => handleMeasurementSystemChange("imperial")}
+                  class={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                    measurementSystem.value === "imperial"
+                      ? "bg-emerald-500 text-white shadow-sm"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+                  }`}
+                >
+                  Imperial
+                </button>
               </div>
             </div>
 
