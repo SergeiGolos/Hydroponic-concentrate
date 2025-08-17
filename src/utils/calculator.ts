@@ -16,6 +16,8 @@ export const DEFAULT_FORMULA: ConcentrateFormula = {
 
 // Conversion factors to milliliters
 const GALLON_TO_ML = 3785.41; // 1 US liquid gallon = 3785.41 ml
+const FLOZ_TO_ML = 29.5735; // 1 US fluid ounce = 29.5735 ml
+const LITER_TO_ML = 1000; // 1 liter = 1000 ml
 
 /**
  * Convert input volume to milliliters based on the selected unit
@@ -27,6 +29,10 @@ export function convertToMilliliters(
   switch (unit) {
     case "ml":
       return containerSize;
+    case "liter":
+      return containerSize * LITER_TO_ML;
+    case "floz":
+      return containerSize * FLOZ_TO_ML;
     case "gallon":
       return containerSize * GALLON_TO_ML;
     case "5gallon":
@@ -47,7 +53,7 @@ export function validateInput(input: CalculationInput): ValidationResult {
     errors.push("Container size must be a positive number");
   }
 
-  if (!["ml", "gallon", "5gallon"].includes(input.unit)) {
+  if (!["ml", "liter", "floz", "gallon", "5gallon"].includes(input.unit)) {
     errors.push("Invalid unit selected");
   }
 
@@ -103,11 +109,81 @@ export function formatWeight(weight: number): string {
 }
 
 /**
- * Format volume for display
+ * Format volume for display with appropriate units
  */
-export function formatVolume(volumeML: number): string {
-  if (volumeML >= 3785) {
-    return `${(volumeML / GALLON_TO_ML).toFixed(2)} gallons`;
+export function formatVolume(
+  volumeML: number,
+  preferredSystem?: "metric" | "imperial",
+): string {
+  if (preferredSystem === "imperial" || (!preferredSystem && volumeML >= 946)) {
+    // Imperial system or large volumes
+    if (volumeML >= 3785) {
+      return `${(volumeML / GALLON_TO_ML).toFixed(2)} gallons`;
+    } else {
+      return `${(volumeML / FLOZ_TO_ML).toFixed(1)} fl oz`;
+    }
+  } else {
+    // Metric system
+    if (volumeML >= 1000) {
+      return `${(volumeML / LITER_TO_ML).toFixed(2)} L`;
+    } else {
+      return `${volumeML.toFixed(0)} ml`;
+    }
   }
-  return `${volumeML.toFixed(0)} ml`;
+}
+
+/**
+ * Get slider range configuration for a specific unit
+ */
+export function getUnitRange(unit: VolumeUnit): {
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+} {
+  switch (unit) {
+    case "ml":
+      return { min: 50, max: 20000, step: 25, defaultValue: 500 };
+    case "liter":
+      return { min: 0.1, max: 50, step: 0.1, defaultValue: 0.5 };
+    case "floz":
+      return { min: 1, max: 640, step: 1, defaultValue: 17 }; // ~500ml
+    case "gallon":
+      return { min: 0.1, max: 15, step: 0.1, defaultValue: 0.13 }; // ~500ml
+    case "5gallon":
+      return { min: 0.1, max: 2, step: 0.1, defaultValue: 1 };
+    default:
+      return { min: 50, max: 20000, step: 25, defaultValue: 500 };
+  }
+}
+
+/**
+ * Get display name for unit
+ */
+export function getUnitDisplayName(unit: VolumeUnit): string {
+  switch (unit) {
+    case "ml":
+      return "ml";
+    case "liter":
+      return "L";
+    case "floz":
+      return "fl oz";
+    case "gallon":
+      return "gal";
+    case "5gallon":
+      return "5-gal";
+    default:
+      return unit;
+  }
+}
+
+/**
+ * Get available units for a measurement system
+ */
+export function getSystemUnits(system: "metric" | "imperial"): VolumeUnit[] {
+  if (system === "metric") {
+    return ["ml", "liter"];
+  } else {
+    return ["floz", "gallon"];
+  }
 }
