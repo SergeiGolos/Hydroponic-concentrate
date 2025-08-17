@@ -101,22 +101,22 @@ export const ConcentrateCalculator = component$(() => {
   });
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4">
-      <div class="mx-auto max-w-lg">
+    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 lg:p-6 xl:p-8">
+      <div class="mx-auto w-full max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
         {/* Header */}
-        <div class="mb-8 text-center">
-          <h1 class="gradient-text mb-3 text-4xl font-bold md:text-5xl">
+        <div class="mb-8 text-center lg:mb-12">
+          <h1 class="gradient-text mb-3 text-4xl font-bold md:text-5xl lg:text-6xl xl:text-7xl">
             Hydroponic Calculator
           </h1>
-          <p class="text-lg font-medium text-slate-600">
+          <p class="text-lg font-medium text-slate-600 lg:text-xl xl:text-2xl">
             Precision nutrient mixing made simple
           </p>
         </div>
 
         {/* Main Calculator Card */}
-        <div class="rounded-2xl border border-white/20 bg-white/80 p-8 shadow-xl backdrop-blur-sm">
+        <div class="rounded-2xl border border-white/20 bg-white/80 p-6 shadow-xl backdrop-blur-sm md:p-8 lg:p-12 xl:p-16">
           <div class="mb-6">
-            <p class="mb-6 text-center leading-relaxed text-slate-700">
+            <p class="mb-6 text-center leading-relaxed text-slate-700 lg:text-lg xl:text-xl">
               Calculate precise ratios for your hydroponic solution. Based on
               the proven
               <strong class="text-emerald-600"> Master Blend formula</strong>:
@@ -128,16 +128,16 @@ export const ConcentrateCalculator = component$(() => {
           {/* Volume Control Section */}
           <div class="mb-8 space-y-6">
             <div class="flex items-center justify-between">
-              <label class="text-lg font-semibold text-slate-800">
+              <label class="text-lg font-semibold text-slate-800 lg:text-xl xl:text-2xl">
                 Container Volume
               </label>
               <div class="flex items-center space-x-2">
-                <span class="text-2xl">
+                <span class="text-2xl lg:text-3xl xl:text-4xl">
                   {getContainerIcon(
                     results.value?.totalVolumeML || containerSize.value,
                   )}
                 </span>
-                <span class="text-sm font-medium text-slate-600">
+                <span class="text-sm font-medium text-slate-600 lg:text-base xl:text-lg">
                   {results.value
                     ? formatVolume(
                         results.value.totalVolumeML,
@@ -150,12 +150,12 @@ export const ConcentrateCalculator = component$(() => {
 
             {/* Measurement System Selection */}
             <div class="mb-4">
-              <label class="mb-3 block text-sm font-medium text-slate-700">
+              <label class="mb-3 block text-sm font-medium text-slate-700 lg:text-base xl:text-lg">
                 Measurement System
               </label>
               <div class="grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
                 <button
-                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 lg:px-4 lg:py-3 lg:text-base xl:text-lg ${
                     measurementSystem.value === "metric"
                       ? "bg-white text-emerald-600 shadow-sm"
                       : "text-slate-600 hover:text-slate-800"
@@ -165,7 +165,7 @@ export const ConcentrateCalculator = component$(() => {
                   Metric
                 </button>
                 <button
-                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 lg:px-4 lg:py-3 lg:text-base xl:text-lg ${
                     measurementSystem.value === "imperial"
                       ? "bg-white text-emerald-600 shadow-sm"
                       : "text-slate-600 hover:text-slate-800"
@@ -243,10 +243,10 @@ export const ConcentrateCalculator = component$(() => {
           {showResults.value && results.value && (
             <div class="fade-in-up space-y-6 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
               <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold text-emerald-800">
+                <h2 class="text-xl font-bold text-emerald-800 lg:text-2xl xl:text-3xl">
                   Required Ingredients
                 </h2>
-                <div class="text-sm font-medium text-emerald-700">
+                <div class="text-sm font-medium text-emerald-700 lg:text-base xl:text-lg">
                   Scale: {results.value.scalingFactor.toFixed(2)}×
                 </div>
               </div>
