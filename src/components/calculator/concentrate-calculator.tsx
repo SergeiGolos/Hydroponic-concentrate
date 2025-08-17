@@ -2,6 +2,7 @@ import { component$, useSignal, $, useTask$ } from "@builder.io/qwik";
 import type {
   CalculationResult,
   MeasurementSystem,
+  VolumeUnit,
 } from "../../types/calculator";
 import {
   calculateMixture,
@@ -10,12 +11,14 @@ import {
   formatVolume,
   getDynamicUnitAndValue,
   getDynamicRange,
-  convertDynamicValueToUnit,
+  getUnitDisplayName,
 } from "../../utils/calculator";
 
 export const ConcentrateCalculator = component$(() => {
   const containerSize = useSignal(500); // This is now the raw slider value
   const measurementSystem = useSignal<MeasurementSystem>("metric");
+  const selectedUnit = useSignal<VolumeUnit>("ml"); // New signal for selected unit
+  const showPreciseInput = useSignal(false); // New signal for checkbox state
   const results = useSignal<CalculationResult | null>(null);
   const error = useSignal("");
   const showResults = useSignal(false);
@@ -23,15 +26,10 @@ export const ConcentrateCalculator = component$(() => {
 
   const performCalculation = $(() => {
     try {
-      // Convert the raw slider value to the appropriate unit for calculation
-      const { value, unit } = convertDynamicValueToUnit(
-        containerSize.value,
-        measurementSystem.value,
-      );
-
+      // Use the selected unit and container size for calculation
       const input = {
-        containerSize: value,
-        unit: unit,
+        containerSize: containerSize.value,
+        unit: selectedUnit.value,
         measurementSystem: measurementSystem.value,
       };
 
@@ -70,11 +68,14 @@ export const ConcentrateCalculator = component$(() => {
     performCalculation();
   });
 
-  const handleSystemChange = $((newSystem: MeasurementSystem) => {
-    measurementSystem.value = newSystem;
-    const range = getDynamicRange(newSystem);
-    containerSize.value = range.defaultValue;
-    updateSliderProgress();
+  const handleUnitChange = $((newUnit: VolumeUnit) => {
+    selectedUnit.value = newUnit;
+    // Update measurement system based on selected unit
+    if (newUnit === "ml" || newUnit === "liter") {
+      measurementSystem.value = "metric";
+    } else {
+      measurementSystem.value = "imperial";
+    }
     performCalculation();
   });
 
@@ -86,17 +87,30 @@ export const ConcentrateCalculator = component$(() => {
     return "🛢️";
   };
 
-  // Get current range for the selected measurement system
+  // Get current range for the selected measurement system (used for slider)
   const range = getDynamicRange(measurementSystem.value);
 
-  // Get dynamic unit display info
-  const dynamicUnit = getDynamicUnitAndValue(
-    containerSize.value,
-    measurementSystem.value,
-  );
+  // Get display value based on whether we're using precise input or slider
+  const getDisplayValue = () => {
+    if (showPreciseInput.value) {
+      return `${containerSize.value} ${getUnitDisplayName(selectedUnit.value)}`;
+    } else {
+      const dynamicUnit = getDynamicUnitAndValue(
+        containerSize.value,
+        measurementSystem.value,
+      );
+      return dynamicUnit.displayText;
+    }
+  };
 
-  // Initial calculation using useTask$
+  // Initial calculation and setup using useTask$
   useTask$(() => {
+    // Set initial unit based on measurement system
+    if (measurementSystem.value === "metric") {
+      selectedUnit.value = "ml";
+    } else {
+      selectedUnit.value = "floz";
+    }
     performCalculation();
   });
 
@@ -143,38 +157,27 @@ export const ConcentrateCalculator = component$(() => {
                         results.value.totalVolumeML,
                         measurementSystem.value,
                       )
-                    : dynamicUnit.displayText}
+                    : getDisplayValue()}
                 </span>
               </div>
             </div>
 
-            {/* Measurement System Selection */}
+            {/* Precise Input Checkbox */}
             <div class="mb-4">
-              <label class="mb-3 block text-sm font-medium text-slate-700 lg:text-base xl:text-lg">
-                Measurement System
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showPreciseInput.value}
+                  onChange$={(e) => {
+                    const target = e.target as HTMLInputElement;
+                    showPreciseInput.value = target.checked;
+                  }}
+                  class="w-4 h-4 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2"
+                />
+                <span class="text-sm font-medium text-slate-700 lg:text-base xl:text-lg">
+                  Use precise value input
+                </span>
               </label>
-              <div class="grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
-                <button
-                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 lg:px-4 lg:py-3 lg:text-base xl:text-lg ${
-                    measurementSystem.value === "metric"
-                      ? "bg-white text-emerald-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-800"
-                  }`}
-                  onClick$={() => handleSystemChange("metric")}
-                >
-                  Metric
-                </button>
-                <button
-                  class={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 lg:px-4 lg:py-3 lg:text-base xl:text-lg ${
-                    measurementSystem.value === "imperial"
-                      ? "bg-white text-emerald-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-800"
-                  }`}
-                  onClick$={() => handleSystemChange("imperial")}
-                >
-                  Imperial
-                </button>
-              </div>
             </div>
 
             {/* Slider Control */}
@@ -209,33 +212,45 @@ export const ConcentrateCalculator = component$(() => {
                 </div>
               </div>
 
-              {/* Manual Input */}
-              <div class="flex items-center space-x-3">
-                <label class="text-sm font-medium whitespace-nowrap text-slate-700">
-                  Precise value:
-                </label>
-                <input
-                  type="number"
-                  min={range.min}
-                  max={range.max}
-                  step={range.step}
-                  value={containerSize.value}
-                  class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
-                  onInput$={(e) => {
-                    const target = e.target as HTMLInputElement;
-                    updateContainerSize(parseFloat(target.value) || range.min);
-                  }}
-                />
-                <span class="text-sm text-slate-600">
-                  {dynamicUnit.unit === "ml"
-                    ? "ml"
-                    : dynamicUnit.unit === "liter"
-                      ? "L"
-                      : dynamicUnit.unit === "floz"
-                        ? "fl oz"
-                        : "gal"}
-                </span>
-              </div>
+              {/* Precise Input - only shown when checkbox is checked */}
+              {showPreciseInput.value && (
+                <div class="space-y-3">
+                  <label class="text-sm font-medium text-slate-700">
+                    Precise value:
+                  </label>
+                  <div class="flex items-center space-x-3">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      value={containerSize.value}
+                      class="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                      onInput$={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        containerSize.value = parseFloat(target.value) || 0;
+                        performCalculation();
+                      }}
+                    />
+                    <select
+                      value={selectedUnit.value}
+                      onChange$={(e) => {
+                        const target = e.target as HTMLSelectElement;
+                        handleUnitChange(target.value as VolumeUnit);
+                      }}
+                      class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 focus:outline-none"
+                    >
+                      <optgroup label="Metric">
+                        <option value="ml">ml</option>
+                        <option value="liter">L</option>
+                      </optgroup>
+                      <optgroup label="Imperial">
+                        <option value="floz">fl oz</option>
+                        <option value="gallon">gal</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
