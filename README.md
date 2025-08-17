@@ -2,11 +2,11 @@
 
 A modern web application that helps hydroponic gardeners calculate precise nutrient concentrate ratios based on proven Master Blend formulations. Calculate the exact amounts of Master Blend fertilizer, Epsom Salt, and Calcium Nitrate needed for any container size.
 
-[![Deploy to GitHub Pages](https://github.com/SergeiGolos/Hydroponic-concentrate/actions/workflows/pages.yml/badge.svg)](https://github.com/SergeiGolos/Hydroponic-concentrate/actions/workflows/pages.yml)
+[![Deploy to GitHub Pages](https://github.com/SergeiGolos/masterblend-concentrate/actions/workflows/pages.yml/badge.svg)](https://github.com/SergeiGolos/masterblend-concentrate/actions/workflows/pages.yml)
 
 ## 🚀 Live Application
 
-**Try it now:** [https://SergeiGolos.github.io/Hydroponic-concentrate/](https://SergeiGolos.github.io/Hydroponic-concentrate/)
+**Try it now:** [https://SergeiGolos.github.io/masterblend-concentrate/](https://SergeiGolos.github.io/masterblend-concentrate/)
 
 ## 📋 What This Application Does
 
@@ -70,8 +70,8 @@ src/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/SergeiGolos/Hydroponic-concentrate.git
-   cd Hydroponic-concentrate
+   git clone https://github.com/SergeiGolos/masterblend-concentrate.git
+   cd masterblend-concentrate
    ```
 
 2. **Install dependencies**
@@ -90,7 +90,7 @@ src/
 
 4. **Open in browser**
 
-   Navigate to `http://localhost:5173/Hydroponic-concentrate/`
+   Navigate to `http://localhost:5173/masterblend-concentrate/`
 
 ## 🔧 Development Commands
 
@@ -155,7 +155,7 @@ The application is automatically deployed to GitHub Pages using GitHub Actions:
 
 - **Triggers**: Pushes to `main` or `master` branches
 - **Build Process**: Automated dependency installation, building, and deployment
-- **Live URL**: [https://SergeiGolos.github.io/Hydroponic-concentrate/](https://SergeiGolos.github.io/Hydroponic-concentrate/)
+- **Live URL**: [https://SergeiGolos.github.io/masterblend-concentrate/](https://SergeiGolos.github.io/masterblend-concentrate/)
 
 ### Manual Deployment
 
@@ -217,8 +217,8 @@ npm run build.types
 ### Getting Help
 
 - 📄 Check the [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed technical documentation
-- 🐞 [Open an issue](https://github.com/SergeiGolos/Hydroponic-concentrate/issues) for bugs or feature requests
-- 💬 Start a [discussion](https://github.com/SergeiGolos/Hydroponic-concentrate/discussions) for questions
+- 🐞 [Open an issue](https://github.com/SergeiGolos/masterblend-concentrate/issues) for bugs or feature requests
+- 💬 Start a [discussion](https://github.com/SergeiGolos/masterblend-concentrate/discussions) for questions
 
 ## 📄 License
 
@@ -233,4 +233,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Ready to grow better plants with precise nutrition?** [Start calculating now!](https://SergeiGolos.github.io/Hydroponic-concentrate/)
+**Ready to grow better plants with precise nutrition?** [Start calculating now!](https://SergeiGolos.github.io/masterblend-concentrate/)
