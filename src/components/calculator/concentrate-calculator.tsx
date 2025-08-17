@@ -195,12 +195,16 @@ export const ConcentrateCalculator = component$(() => {
                 />
                 <div class="mt-2 flex justify-between text-xs text-slate-500">
                   <span>
-                    {getDynamicUnitAndValue(range.min, measurementSystem.value)
-                      .displayText}
+                    {
+                      getDynamicUnitAndValue(range.min, measurementSystem.value)
+                        .displayText
+                    }
                   </span>
                   <span>
-                    {getDynamicUnitAndValue(range.max, measurementSystem.value)
-                      .displayText}
+                    {
+                      getDynamicUnitAndValue(range.max, measurementSystem.value)
+                        .displayText
+                    }
                   </span>
                 </div>
               </div>
@@ -223,9 +227,13 @@ export const ConcentrateCalculator = component$(() => {
                   }}
                 />
                 <span class="text-sm text-slate-600">
-                  {dynamicUnit.unit === 'ml' ? 'ml' : 
-                   dynamicUnit.unit === 'liter' ? 'L' :
-                   dynamicUnit.unit === 'floz' ? 'fl oz' : 'gal'}
+                  {dynamicUnit.unit === "ml"
+                    ? "ml"
+                    : dynamicUnit.unit === "liter"
+                      ? "L"
+                      : dynamicUnit.unit === "floz"
+                        ? "fl oz"
+                        : "gal"}
                 </span>
               </div>
             </div>
