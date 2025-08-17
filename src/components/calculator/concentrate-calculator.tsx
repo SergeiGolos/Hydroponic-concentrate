@@ -195,12 +195,16 @@ export const ConcentrateCalculator = component$(() => {
                 />
                 <div class="mt-2 flex justify-between text-xs text-slate-500">
                   <span>
-                    {getDynamicUnitAndValue(range.min, measurementSystem.value)
-                      .displayText}
+                    {
+                      getDynamicUnitAndValue(range.min, measurementSystem.value)
+                        .displayText
+                    }
                   </span>
                   <span>
-                    {getDynamicUnitAndValue(range.max, measurementSystem.value)
-                      .displayText}
+                    {
+                      getDynamicUnitAndValue(range.max, measurementSystem.value)
+                        .displayText
+                    }
                   </span>
                 </div>
               </div>
@@ -223,9 +227,13 @@ export const ConcentrateCalculator = component$(() => {
                   }}
                 />
                 <span class="text-sm text-slate-600">
-                  {dynamicUnit.unit === 'ml' ? 'ml' : 
-                   dynamicUnit.unit === 'liter' ? 'L' :
-                   dynamicUnit.unit === 'floz' ? 'fl oz' : 'gal'}
+                  {dynamicUnit.unit === "ml"
+                    ? "ml"
+                    : dynamicUnit.unit === "liter"
+                      ? "L"
+                      : dynamicUnit.unit === "floz"
+                        ? "fl oz"
+                        : "gal"}
                 </span>
               </div>
             </div>
@@ -243,43 +251,70 @@ export const ConcentrateCalculator = component$(() => {
                 </div>
               </div>
 
-              <div class="grid gap-4">
-                <div class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-100 p-4 text-blue-800">
-                  <div>
-                    <div class="font-semibold">Master Blend</div>
-                    <div class="text-sm opacity-75">Primary nutrients</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xl font-bold">
-                      {formatWeight(results.value.masterBlend)}
+              <div class="space-y-6">
+                {/* Part A - Nitrogen Source */}
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-emerald-800">
+                      Part A - Nitrogen Solution
+                    </h3>
+                    <div class="text-sm font-medium text-emerald-700">
+                      {formatWeight(results.value.calciumNitrate)}g total
                     </div>
-                    <div class="text-sm">grams</div>
+                  </div>
+                  <div class="flex items-center justify-between rounded-lg border border-orange-200 bg-orange-100 p-4 text-orange-800">
+                    <div>
+                      <div class="font-semibold">Calcium Nitrate</div>
+                      <div class="text-sm opacity-75">Calcium & nitrogen</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xl font-bold">
+                        {formatWeight(results.value.calciumNitrate)}
+                      </div>
+                      <div class="text-sm">grams</div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-100 p-4 text-purple-800">
-                  <div>
-                    <div class="font-semibold">Epsom Salt</div>
-                    <div class="text-sm opacity-75">Magnesium & sulfur</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xl font-bold">
-                      {formatWeight(results.value.epsomSalt)}
+                {/* Part B - Master Blend & Epsom Salt */}
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-emerald-800">
+                      Part B - Master Blend Solution
+                    </h3>
+                    <div class="text-sm font-medium text-emerald-700">
+                      {formatWeight(
+                        results.value.masterBlend + results.value.epsomSalt,
+                      )}
+                      g total
                     </div>
-                    <div class="text-sm">grams</div>
                   </div>
-                </div>
+                  <div class="grid gap-3">
+                    <div class="flex items-center justify-between rounded-lg border border-blue-200 bg-blue-100 p-4 text-blue-800">
+                      <div>
+                        <div class="font-semibold">Master Blend</div>
+                        <div class="text-sm opacity-75">Primary nutrients</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-xl font-bold">
+                          {formatWeight(results.value.masterBlend)}
+                        </div>
+                        <div class="text-sm">grams</div>
+                      </div>
+                    </div>
 
-                <div class="flex items-center justify-between rounded-lg border border-orange-200 bg-orange-100 p-4 text-orange-800">
-                  <div>
-                    <div class="font-semibold">Calcium Nitrate</div>
-                    <div class="text-sm opacity-75">Calcium & nitrogen</div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xl font-bold">
-                      {formatWeight(results.value.calciumNitrate)}
+                    <div class="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-100 p-4 text-purple-800">
+                      <div>
+                        <div class="font-semibold">Epsom Salt</div>
+                        <div class="text-sm opacity-75">Magnesium & sulfur</div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-xl font-bold">
+                          {formatWeight(results.value.epsomSalt)}
+                        </div>
+                        <div class="text-sm">grams</div>
+                      </div>
                     </div>
-                    <div class="text-sm">grams</div>
                   </div>
                 </div>
               </div>

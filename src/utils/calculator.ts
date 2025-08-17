@@ -250,7 +250,7 @@ export function getDynamicRange(system: "metric" | "imperial"): {
     // Step of 25ml when < 1000ml, then equivalent to 0.025L steps
     return { min: 50, max: 20000, step: 25, defaultValue: 500 };
   } else {
-    // Range from 1 fl oz to 1280 fl oz (10 gallons)  
+    // Range from 1 fl oz to 1280 fl oz (10 gallons)
     // Step of 1 fl oz when < 128 fl oz, then equivalent to ~0.008 gallon steps
     return { min: 1, max: 1280, step: 1, defaultValue: 17 }; // ~500ml equivalent
   }
@@ -265,7 +265,7 @@ export function convertDynamicValueToUnit(
   system: "metric" | "imperial",
 ): { value: number; unit: VolumeUnit } {
   const unitInfo = getDynamicUnitAndValue(rawValue, system);
-  
+
   if (system === "metric") {
     if (rawValue >= 1000) {
       // Value is in liters for calculation
@@ -276,7 +276,7 @@ export function convertDynamicValueToUnit(
     }
   } else {
     if (rawValue >= 128) {
-      // Value is in gallons for calculation  
+      // Value is in gallons for calculation
       return { value: unitInfo.displayValue, unit: "gallon" };
     } else {
       // Value is in fl oz for calculation
