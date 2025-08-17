@@ -333,6 +333,64 @@ export const ConcentrateCalculator = component$(() => {
             </div>
           )}
 
+          {/* Supply Purchase Section */}
+          {showResults.value && (
+            <div class="fade-in-up mt-6 space-y-4 rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+              <div class="flex items-center space-x-2">
+                <span class="text-2xl">🛒</span>
+                <h2 class="text-lg font-bold text-blue-800">
+                  Purchase Ingredients
+                </h2>
+              </div>
+
+              <p class="text-sm leading-relaxed text-blue-700">
+                Get all the ingredients you need for your hydroponic solution.
+                This complete kit includes Master Blend, Epsom Salt, and Calcium
+                Nitrate.
+              </p>
+
+              <div class="flex flex-col space-y-3">
+                <a
+                  href="https://a.co/d/dz8waSw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group flex items-center justify-center space-x-3 rounded-lg border border-orange-400 bg-gradient-to-r from-orange-400 to-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-[1.02] hover:from-orange-500 hover:to-orange-600 hover:shadow-xl focus:ring-4 focus:ring-orange-300 focus:outline-none"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M.75 9.75h22.5A.75.75 0 0 1 24 10.5v9a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3v-9a.75.75 0 0 1 .75-.75zm21 1.5H2.25v7.5c0 .828.672 1.5 1.5 1.5h16.5c.828 0 1.5-.672 1.5-1.5v-7.5z" />
+                    <path d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75zm2.25-3A.75.75 0 0 1 6 3h12a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75z" />
+                  </svg>
+                  <span>Buy on Amazon</span>
+                  <svg
+                    class="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+
+                <div class="flex items-center justify-center text-xs text-blue-600">
+                  <svg
+                    class="mr-1 h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15,3 21,3 21,9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  <span>Opens in new tab</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Error Display */}
           {error.value && (
             <div class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
